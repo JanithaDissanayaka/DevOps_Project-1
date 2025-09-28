@@ -8,7 +8,7 @@ export default function Page() {
     <main>
       <Hero />
       <Menu />
-      <App />
+      <App  />
       <Offers />
     </main>
   );
