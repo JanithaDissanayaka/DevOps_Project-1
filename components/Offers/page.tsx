@@ -28,7 +28,7 @@ const OfferSection: React.FC = () => {
         <div className="news-grid">
           <article className="news-card">
             <div className="news-image">
-              <img src="/gourmet-burger-fries.png" alt="Burger" />
+              <img src="/offer/burger.jpg" alt="Burger" />
             </div>
             <div className="news-content">
               <h3 className="news-card-title">LOOK HOW WE MAKE BEEF MEAT TASTY, WITH THIS TECHNIQUE</h3>
@@ -40,7 +40,7 @@ const OfferSection: React.FC = () => {
 
           <article className="news-card">
             <div className="news-image">
-              <img src="/seafood-platter-with-oysters-and-shellfish.jpg" alt="Seafood" />
+              <img src="/offer/party.jpg" alt="Seafood" />
             </div>
             <div className="news-content">
               <h3 className="news-card-title">GET A 20% DISCOUNT AT OUR BIRTHDAY EVENT FOR IS 5000 SPEND</h3>
@@ -52,7 +52,7 @@ const OfferSection: React.FC = () => {
 
           <article className="news-card">
             <div className="news-image">
-              <img src="/strawberry-smoothie-with-fresh-strawberries.jpg" alt="Smoothie" />
+              <img src="/offer/smoothie.jpg" alt="Smoothie" />
             </div>
             <div className="news-content">
               <h3 className="news-card-title">STRAWBERRY SMOOTHIE IS THE BEST BEVERAGE FOR YOUR HOT DAY</h3>
