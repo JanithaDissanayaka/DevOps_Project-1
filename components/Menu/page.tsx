@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 const Menu: React.FC = () => {
-
   const foods = [
     { name: "Reguler Beef Burger", price: "350", img: "/img/burger1.jpg" },
     { name: "Black Beef Burger", price: "350", img: "/img/burger2.jpg" },
@@ -49,14 +48,16 @@ const Menu: React.FC = () => {
   };
 
   return (
-    <section id="menu" className="bg-black text-white min-h-screen ">
+    <section id="menu" className="bg-black text-white min-h-screen">
       <div className="max-w-6xl mx-auto px-6">
-      
-        <h1 className="text-center text-3xl md:text-4xl font-bold mb-8">
+        {/* Title */}
+        <h1 className="text-5xl font-bold text-center ">
           OUR BEST MENU
         </h1>
+        <div className="w-50 h-1 bg-yellow-500 mx-auto rounded mb-8"></div>
 
-        <div className="flex justify-center space-x-4 mb-10">
+        {/* Tabs */}
+        <div className="flex justify-center space-x-16 mb-10">
           <button
             className={`px-6 py-2 rounded font-bold ${
               activeTab === "foods"
@@ -89,47 +90,44 @@ const Menu: React.FC = () => {
           </button>
         </div>
 
+        {/* Menu Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {getItems().map((item, idx) => (
             <div
               key={idx}
-              className="bg-neutral-900 rounded-lg overflow-hidden shadow-md"
+              className="bg-neutral-900 rounded-lg overflow-hidden shadow-md relative"
             >
               <img
                 src={item.img}
                 alt={item.name}
                 className="w-full h-36 object-cover"
               />
-              <div className="p-3">
+              <div className="p-3 flex justify-between items-center">
                 <h2 className="text-sm font-bold uppercase">{item.name}</h2>
-                <p className="text-yellow-400 font-semibold">RS.{item.price}</p>
+                <p className="text-yellow-400 font-semibold text-sm">
+                  RS.{item.price}
+                </p>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Footer (unchanged) */}
         <div className="relative text-center mt-10">
-      <Image
-        src="/img/restaurant-bg.jpg"
-        alt="Hero"
-        width={1920}
-        height={0}
-  
-
-      />
-      <div className="absolute inset-0 bg-black/30" aria-hidden />
-
-      <div className="absolute inset-0 flex items-center justify-center">
-        <h1 className="z-10 text-white text-3xl md:text-5xl font-bold drop-shadow-lg pt-50">
-          We Serve You The Best
-          <div className="w-50 h-1 bg-yellow-500 mx-auto rounded"></div>
-        </h1>
-        
-      </div>
-      
-    </div>
-        
-
-        
+          <Image
+            src="/img/restaurant-bg.jpg"
+            alt="Hero"
+            width={1920}
+            height={0}
+          />
+          <div className="absolute inset-0 bg-black/30" aria-hidden />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1 className="z-10 text-white text-3xl md:text-5xl font-bold drop-shadow-lg pt-50">
+              We Serve You The Best
+              <div className="w-50 h-1 bg-yellow-500 mx-auto rounded"></div>
+            </h1>
+          </div>
+        </div>
       </div>
     </section>
   );
