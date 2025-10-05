@@ -37,7 +37,7 @@ export default function Hero() {
 
             <div className="w-[400px] text-center">
               <p className="text-gray-300 text-lg">
-                Whether you're craving familiar favorites or
+                Whether you&apos;re craving familiar favorites or
                 <br />
                 exploring culinary innovations, burgers come <br />
                 in a remarkable range of styles.

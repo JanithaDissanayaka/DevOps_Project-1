@@ -8,7 +8,7 @@ const OfferSection: React.FC = () => {
       <section className="hero-offer">
         <div className="hero-content">
           <h1 className="hero-title">
-            GET A SPECIAL OFFER FOR FOR
+            GET A SPECIAL OFFER FOR
             <br />
             YOUR SPECIAL OCCASION
           </h1>

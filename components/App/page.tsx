@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 
 const reviews = [
   {
@@ -65,7 +66,7 @@ const App: React.FC = () => {
         </div>
         <div className="md:flex-1 text-center md:text-left">
           <h2 className="text-3xl md:text-3xl font-extrabold tracking-wide">
-            DON'T WORRY ! YOU CAN ORDER
+            DONT WORRY ! YOU CAN ORDER
             YOUR FOOD JUST BY PHONE
           </h2>
           <div className="mt-6 mb-4">
