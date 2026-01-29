@@ -11,7 +11,7 @@ variable public_subnets {}
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "nextJS-vpc"
+  name = "website-vpc"
   cidr = "10.0.0.0/16"
 
   azs             = data.aws_availability_zones.azs.names
@@ -29,16 +29,16 @@ module "vpc" {
 
   
   tags = {
-    "kubernetes.io/cluster/app-cluster" = "shared"
+    "kubernetes.io/cluster/website-cluster" = "shared"
   }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/app-cluster" = "shared"
+    "kubernetes.io/cluster/website-cluster" = "shared"
     "kubernetes.io/role/elb"            = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/app-cluster" = "shared"
+    "kubernetes.io/cluster/website-cluster" = "shared"
     "kubernetes.io/role/internal-elb"   = "1"
   }
 
