@@ -1,0 +1,19 @@
+---
+- name: Deploy app in new namespace
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        name: my-app
+        api_version: v1
+        kind: Namespace
+        state: present
+        kubeconfig: /mnt/c/Users/Janitha/Desktop/Projects/Ansible/EKS cluster ans ansible/terraform/kubeconfig_app-cluster
+    - name: deploy nginx app
+      kubernetes.core.k8s:
+        src: /mnt/c/Users/Janitha/Desktop/Projects/Ansible/EKS cluster ans ansible/nginx.yaml
+        state: present
+        kubeconfig: /mnt/c/Users/Janitha/Desktop/Projects/Ansible/EKS cluster ans ansible/terraform/kubeconfig_app-cluster
+        namespace: my-app
