@@ -15,13 +15,5 @@ pipeline{
                 }
             }
         }
-
-        stage('Test the build'){
-            steps{
-                script{
-
-                }
-            }
-        }
     }
 }
