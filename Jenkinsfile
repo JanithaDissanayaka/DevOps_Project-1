@@ -6,6 +6,11 @@ pipeline{
         nodejs 'node'
     }
 
+    environment {
+        IMAGE = 'janithadissanayaka/learn:burger'
+    }
+
+
     stages {
 
         stage('Install Dependencies') {
@@ -43,8 +48,8 @@ pipeline{
                 ]) {
                     sh '''
                       echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                      docker build -t nextsite:v1 .
-                      docker push nextsite:v1
+                      docker build -t $IMAGE .
+                      docker push $IMAGE
                     '''
                 }
             }
