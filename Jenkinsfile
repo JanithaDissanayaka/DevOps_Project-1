@@ -6,6 +6,11 @@ pipeline{
         nodejs 'node'
     }
 
+    environment {
+        IMAGE = 'janithadissanayaka/learn:burger'
+    }
+
+
     stages {
 
         stage('Install Dependencies') {
@@ -43,12 +48,33 @@ pipeline{
                 ]) {
                     sh '''
                       echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                      docker build -t nextsite:v1 .
-                      docker push nextsite:v1
+                      docker build -t $IMAGE .
+                      docker push $IMAGE
                     '''
                 }
             }
         }
+
+        stage('Provision Server') {
+            agent {
+                docker {
+                    image 'hashicorp/terraform:1.6'
+                    args '--entrypoint="" -u root'
+                }
+            }
+            steps {
+                withCredentials([
+                    [$class: 'AmazonWebServicesCredentialsBinding',
+                     credentialsId: 'AWS_CRED']
+                ]) {
+                    dir('Terraform') {
+                        sh 'terraform init'
+                        sh 'terraform apply --auto-approve'
+                    }
+                }
+            }
+        }
+
 
     }
 }
