@@ -1,74 +1,63 @@
 provider "kubernetes" {
-    host=data.aws_eks_cluster.website.endpoint
-    token=data.aws_eks_cluster_auth.website.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.website.certificate_authority[0].data)
-    load_config_file       = false
-  }
+  load_config_file = false
 
-data "aws_eks_cluster" "website" {
-  name = module.eks.cluster_name
-  depends_on = [ module.eks ]
+  host                   = data.aws_eks_cluster.app.endpoint
+  token                  = data.aws_eks_cluster_auth.app.token
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.app.certificate_authority[0].data)
 }
 
-data "aws_eks_cluster_auth" "website" {
-  name = module.eks.cluster_name
-  depends_on = [ module.eks ]
+
+data "aws_eks_cluster" "app" {
+  name       = module.eks.cluster_name
+  depends_on = [module.eks]
+}
+
+data "aws_eks_cluster_auth" "app" {
+  name       = module.eks.cluster_name
+  depends_on = [module.eks]
 }
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  name               = "website-cluster"
+  name               = "app-cluster"
   kubernetes_version = "1.33"
 
   addons = {
-  coredns = {
-    resolve_conflicts_on_create = "OVERWRITE"
-    resolve_conflicts_on_update = "OVERWRITE"
+    coredns                = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy             = {}
+    vpc-cni                = {
+      before_compute = true
+    }
   }
-
-  kube-proxy = {
-    resolve_conflicts_on_create = "OVERWRITE"
-    resolve_conflicts_on_update = "OVERWRITE"
-  }
-
-  vpc-cni = {
-    before_compute              = true
-    resolve_conflicts_on_create = "OVERWRITE"
-    resolve_conflicts_on_update = "OVERWRITE"
-  }
-
-  eks-pod-identity-agent = {
-    before_compute = true
-  }
-}
-
 
   endpoint_public_access = true
   endpoint_private_access = true
 
-  # Optional: Adds the current caller identity as an administrator via cluster access entry
   enable_cluster_creator_admin_permissions = true
+
 
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.vpc.private_subnets
 
-  # EKS Managed Node Group(s)
-  eks_managed_node_groups = {
-    example = {
-      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-      ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.micro"]
 
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
+  eks_managed_node_groups = {
+    app = {
+      ami_type       = "AL2023_x86_64_STANDARD"
+      instance_types = ["t3.small"]
+
+      min_size     = 2
+      max_size     = 3
+      desired_size = 2
     }
   }
 
   tags = {
-    Environment = "test"
+    Environment = "dev"
     Terraform   = "true"
   }
 }
