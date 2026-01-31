@@ -12,7 +12,7 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "website-vpc"
-  cidr = "10.0.0.0/16"
+  cidr = var.cidr
 
   azs             = data.aws_availability_zones.azs.names
   private_subnets = var.private_subnets
