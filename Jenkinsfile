@@ -127,7 +127,7 @@ stage('Deploy to EKS with Ansible') {
 
                         # --- CRITICAL FIX ---
                         # Force Ansible to use standard YAML output (bypasses the broken config plugin)
-                        export ANSIBLE_STDOUT_CALLBACK=yaml
+                        sed -i 's/community.general.yaml/yaml/g' Ansible/ansible.cfg
                         # --------------------
 
                         # 4. Run Ansible
