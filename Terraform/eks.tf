@@ -17,9 +17,15 @@ data "aws_eks_cluster_auth" "app" {
   depends_on = [module.eks]
 }
 
+resource "time_sleep" "wait_for_eks_oidc" {
+  create_duration = "120s"
+}
+
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
+  depends_on = [time_sleep.wait_for_eks_oidc]
 
   name               = "app-cluster"
   kubernetes_version = "1.33"
