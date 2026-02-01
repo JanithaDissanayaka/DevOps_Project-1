@@ -114,6 +114,7 @@ stage('Deploy to EKS with Ansible') {
                         # 1. Install dependencies
                         apk add --no-cache python3 py3-pip curl
                         pip3 install ansible kubernetes --break-system-packages
+                        apk add --no-cache python3 py3-pip curl aws-cli
 
                         # 2. Install kubectl
                         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
