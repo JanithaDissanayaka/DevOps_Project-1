@@ -96,49 +96,65 @@ pipeline{
 }
 
 stage('Deploy to EKS with Ansible') {
-            agent {
-                docker {
-                    image 'docker:cli'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'docker-registry-creds',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-                    sh '''
-                        # 1. Install dependencies
-                        apk add --no-cache python3 py3-pip curl
-                        pip3 install ansible kubernetes --break-system-packages
-                        apk add --no-cache python3 py3-pip curl aws-cli
-
-                        # 2. Install kubectl
-                        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-                        install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-                        # 3. Setup Environment
-                        export KUBECONFIG=$WORKSPACE/kubeconfig
-                        
-                        AUTH_STRING=$(echo -n "$DOCKER_USER:$DOCKER_PASS" | base64)
-                        export DOCKER_CONFIG_JSON=$(echo -n '{"auths":{"https://index.docker.io/v1/":{"username":"'$DOCKER_USER'","password":"'$DOCKER_PASS'","email":"email@example.com","auth":"'$AUTH_STRING'"} }}' | base64 -w 0)
-
-                        # --- CRITICAL FIX ---
-                        # Force Ansible to use standard YAML output (bypasses the broken config plugin)
-                        sed -i 's/community.general.yaml/yaml/g' Ansible/ansible.cfg
-                        # --------------------
-
-                        # 4. Run Ansible
-                        export KUBECONFIG=/var/jenkins_home/workspace/Next-site_ansible@2/kubeconfig
-                        cd Ansible                        
-                        ansible-playbook deploy-to-eks-cluster.yaml
-                    '''
-                }
-            }
+    agent {
+        docker {
+            image 'docker:cli'
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
         }
+    }
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'docker-registry-creds',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            ),
+            [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']
+        ]) {
+            sh '''
+                set -e
+
+                # 1. Install system deps
+                apk add --no-cache python3 py3-pip curl aws-cli bash
+
+                # 2. Install Python deps for Ansible + EKS auth
+                pip3 install --break-system-packages \
+                    ansible \
+                    kubernetes \
+                    boto3 \
+                    botocore
+
+                # 3. Install kubectl
+                curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                install -m 0755 kubectl /usr/local/bin/kubectl
+
+                # 4. Generate kubeconfig for EKS
+                aws eks update-kubeconfig \
+                  --region ap-south-1 \
+                  --name app-cluster \
+                  --kubeconfig $WORKSPACE/kubeconfig
+
+                # 5. Export vars so ANSIBLE uses exec auth correctly
+                export KUBECONFIG=$WORKSPACE/kubeconfig
+                export K8S_AUTH_KUBECONFIG=$KUBECONFIG
+                export K8S_AUTH_CONTEXT=$(kubectl config current-context)
+                export KUBERNETES_EXEC_INFO='{"apiVersion":"client.authentication.k8s.io/v1beta1"}'
+
+                # 6. Docker Hub auth for k8s secret creation
+                AUTH_STRING=$(echo -n "$DOCKER_USER:$DOCKER_PASS" | base64)
+                export DOCKER_CONFIG_JSON=$(echo -n '{"auths":{"https://index.docker.io/v1/":{"username":"'$DOCKER_USER'","password":"'$DOCKER_PASS'","auth":"'$AUTH_STRING'"}}}' | base64 -w 0)
+
+                # 7. Sanity check (if this fails, Ansible will fail too)
+                kubectl get nodes
+
+                # 8. Run Ansible
+                cd Ansible
+                ansible-playbook deploy-to-eks-cluster.yaml -vvv
+            '''
+        }
+    }
+}
+
 
 
 
