@@ -34,7 +34,7 @@ pipeline{
             }
         }
 
-        stage('Docker Build & Push') {
+        /*stage('Docker Build & Push') {
             agent {
                 docker {
                     image 'docker:cli'
@@ -56,7 +56,7 @@ pipeline{
                     '''
                 }
             }
-        }
+        }*/
 
         stage('Provision Server') {
             agent {

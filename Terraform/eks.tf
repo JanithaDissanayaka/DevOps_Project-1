@@ -17,15 +17,9 @@ data "aws_eks_cluster_auth" "app" {
   depends_on = [module.eks]
 }
 
-resource "time_sleep" "wait_for_eks_oidc" {
-  create_duration = "120s"
-}
-
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
-  depends_on = [time_sleep.wait_for_eks_oidc]
 
   name               = "app-cluster"
   kubernetes_version = "1.33"
@@ -54,7 +48,7 @@ module "eks" {
   eks_managed_node_groups = {
     app = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.small"]
+      instance_types = ["t3.micro"]
 
       min_size     = 2
       max_size     = 3
