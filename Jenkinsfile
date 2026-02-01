@@ -131,6 +131,7 @@ stage('Deploy to EKS with Ansible') {
                         # --------------------
 
                         # 4. Run Ansible
+                        export KUBECONFIG=/var/jenkins_home/workspace/Next-site_ansible@2/kubeconfig
                         cd Ansible
                         ansible-playbook deploy-to-eks-cluster.yaml
                     '''
