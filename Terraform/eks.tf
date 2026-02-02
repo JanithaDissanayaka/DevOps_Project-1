@@ -35,26 +35,24 @@ module "eks" {
     }
   }
 
-  endpoint_private_access = true
   endpoint_public_access = true
+  endpoint_private_access = true
 
   enable_cluster_creator_admin_permissions = true
 
 
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.vpc.private_subnets
-  control_plane_subnet_ids = module.vpc.public_subnets
-
 
 
   eks_managed_node_groups = {
     app = {
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.small"]
+      instance_types = ["t3.micro"]
 
       min_size     = 2
-      max_size     = 5
-      desired_size = 4
+      max_size     = 3
+      desired_size = 2
     }
   }
 
