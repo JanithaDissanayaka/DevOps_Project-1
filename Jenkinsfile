@@ -72,6 +72,7 @@ pipeline{
         ]) {
             dir('Terraform') {
                 sh '''
+                
                     # 1. Install AWS CLI and curl (needed for kubectl)
                     apk add --no-cache aws-cli curl
 
