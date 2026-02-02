@@ -86,6 +86,7 @@ pipeline{
                     terraform apply --auto-approve
                     
                     # 4. Update Kubeconfig
+                    sleep 60
                     aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME --kubeconfig $WORKSPACE/kubeconfig
                     
                     # 5. Verify connectivity
