@@ -14,7 +14,8 @@ module "vpc" {
   name = "website-vpc"
   cidr = var.cidr
 
-  azs             = data.aws_availability_zones.azs.names
+  azs = ["ap-south-1a"]
+
   private_subnets = var.private_subnets
   public_subnets  = var.public_subnets
   
