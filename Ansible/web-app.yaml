@@ -14,7 +14,7 @@ spec:
         app: web-app
     spec:
       imagePullSecrets:
-        - name: dockerhub-secret   # 👈 ADD THIS LINE
+        - name: dockerhub-secret
       containers:
         - name: web-app
           image: janithadissanayaka/learn:burger
@@ -32,7 +32,7 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: web-app
   ports:
@@ -47,6 +47,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-app-ingress
+  namespace: web-app
 spec:
   ingressClassName: nginx 
   rules:
