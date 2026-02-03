@@ -1,0 +1,43 @@
+- name: Deploy app in new namespace
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    kubeconfig_path: "{{ lookup('env','KUBECONFIG') }}"
+
+  tasks:
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        name: web-app
+        api_version: v1
+        kind: Namespace
+        state: present
+        kubeconfig: "{{ kubeconfig_path }}"
+
+    - name: Create Docker Hub secret
+      kubernetes.core.k8s:
+        kubeconfig: "{{ kubeconfig_path }}"
+        namespace: web-app
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: dockerhub-secret
+          type: kubernetes.io/dockerconfigjson
+          data:
+            .dockerconfigjson: "{{ lookup('env','DOCKER_CONFIG_JSON') }}"
+
+    - name: Deploy web-app application
+      kubernetes.core.k8s:
+        src: web-app.yaml
+        state: present
+        kubeconfig: "{{ kubeconfig_path }}"
+        namespace: web-app
+
+    - name: Install NGINX Ingress Controller
+      kubernetes.core.k8s:
+        kubeconfig: "{{ kubeconfig_path }}"
+        state: present
+        apply: yes          # 👈 ensures updates are merged safely
+        src: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/aws/deploy.yaml
