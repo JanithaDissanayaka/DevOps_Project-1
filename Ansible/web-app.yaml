@@ -17,7 +17,7 @@ spec:
         - name: dockerhub-secret
       containers:
         - name: web-app
-          image: <image>
+          image: your-dockerhub-username/web-app:latest
           ports:
             - containerPort: 3000
 
