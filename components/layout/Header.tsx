@@ -34,7 +34,7 @@ export default function Header() {
         {/* Shop Online Button */}
         <div className="flex items-center">
           <button className="bg-yellow-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-yellow-300 transition-colors duration-200">
-            Shop online
+            Shop Now
           </button>
         </div>
 
