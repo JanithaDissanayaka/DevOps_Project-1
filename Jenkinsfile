@@ -9,7 +9,7 @@ pipeline{
     environment {
         IMAGE = 'janithadissanayaka/learn:burger'
         AWS_REGION = 'ap-south-1'
-        CLUSTER_NAME = 'app-cluster'
+        CLUSTER_NAME = 'website-cluster'
         DOCKER_EMAIL='janithadissnayakaa@gmail.com'
     }
 
