@@ -1,4 +1,4 @@
-project: DevOps CI/CD Pipeline on AWS EKS
+project 1 : DevOps CI/CD Pipeline on AWS EKS
 
 description:
   This project demonstrates an end-to-end DevOps pipeline that builds, containerizes, provisions infrastructure, and deploys an application to Kubernetes (EKS) on AWS.
